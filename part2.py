@@ -65,7 +65,7 @@ def main():
                 tempHtml = urllib2.urlopen(str(urls[i]) + "?page=" + str(l))
             except:
                 print("No page number " + str(l))
-                continue
+                break
             soup = BeautifulSoup(tempHtml, 'html.parser')
             tempIndexes, tempAuthors, tempTitles, tempLinks, j = getArticle(author, soup, k, j)
             indexes += tempIndexes
