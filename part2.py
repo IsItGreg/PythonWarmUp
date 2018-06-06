@@ -5,22 +5,26 @@ import pandas
 from bs4 import BeautifulSoup
 from warmup import cleanArticle
 
-def getArticle(author, soup, num, count):
+def getArticle(author, soup, num, aArtCur):
     tAuthors = []
     tLinks = []
     tTitles = []
     tLastLink = ""
     tIndexes = []
     newNum = num
+    aFromP = 0
+    if aArtCur >= 25:
+        print("Already found 25 articles for " + author)
+        return tIndexes, tAuthors, tTitles, tLinks, aFromP
     for link in soup.find_all('a'):
         if link.get('href').startswith("/a/") and len(link.get('href')) > 16 and link.get('href') != tLastLink \
-                and count < 25:
+                and aArtCur + aFromP < 25:
             tLinks += ["https://www.voanews.com/" + link.get('href')]
             tAuthors += [author]
             tLastLink = link.get('href')
-            tIndexes += ["{:0>3d}".format(newNum + count)]
+            tIndexes += ["{:0>3d}".format(newNum + aArtCur + aFromP)]
             #print(tLastLink)
-            tTitles += [cleanArticle("https://www.voanews.com" + tLastLink, newNum + count)]
+            tTitles += [cleanArticle("https://www.voanews.com" + tLastLink, newNum + aArtCur + aFromP)]
             if tTitles[len(tTitles) - 1] == "emptyfile":
                 tTitles.pop()
                 tIndexes.pop()
@@ -28,8 +32,9 @@ def getArticle(author, soup, num, count):
                 tLinks.pop()
 
             else:
-                count+=1
-    return tIndexes, tAuthors, tTitles, tLinks, count
+                aFromP += 1
+    #print(aFromP)
+    return tIndexes, tAuthors, tTitles, tLinks, aFromP
 
 def main():
     urls = ["https://www.voanews.com/author/4365.html",
@@ -41,25 +46,31 @@ def main():
             "https://www.voanews.com/author/4349.html",
             "https://www.voanews.com/author/23467.html"]
 
-    k = 0
+    totalArticles = 0
     links = []
     authors = []
     titles = []
     indexes = []
     for i in range(0, len(urls)):
+        aArticles = 0
         tempHtml = urllib2.urlopen(urls[i])
         soup = BeautifulSoup(tempHtml, 'html.parser')
         author = soup.find('h1').string
         print(author)
 
-        tempIndexes, tempAuthors, tempTitles, tempLinks, j = getArticle(author, soup, k, 0)
+        tempIndexes, tempAuthors, tempTitles, tempLinks, pageArticles = getArticle(author, soup, totalArticles, 0)
         indexes += tempIndexes
         authors += tempAuthors
         titles += tempTitles
         links += tempLinks
-        print(j)
+        aArticles += pageArticles
+        print(aArticles)
 
         for l in range(2, 5):
+            if aArticles >= 25:
+                print("Skipping pages")
+                break
+            pageArticles = 0
             print("pag" + str(l))
             try:
                 tempHtml = urllib2.urlopen(str(urls[i]) + "?page=" + str(l))
@@ -67,13 +78,14 @@ def main():
                 print("No page number " + str(l))
                 break
             soup = BeautifulSoup(tempHtml, 'html.parser')
-            tempIndexes, tempAuthors, tempTitles, tempLinks, j = getArticle(author, soup, k, j)
+            tempIndexes, tempAuthors, tempTitles, tempLinks, pageArticles = getArticle(author, soup, totalArticles, aArticles)
             indexes += tempIndexes
             authors += tempAuthors
             titles += tempTitles
             links += tempLinks
-            k += j
-            print(j)
+            aArticles += pageArticles
+            print(aArticles)
+        totalArticles += aArticles
 
     data = {'Author': authors, 'Title': titles, 'URL': links}
     df = pandas.DataFrame(data, index=indexes).rename_axis("Text #", axis=1)
