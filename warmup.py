@@ -30,7 +30,7 @@ def cleanArticle(url, number):
             if keepGoing == True:
                 if line.string == None:
                     for text in line.stripped_strings:
-                        newText = text.encode('ascii', 'ignore')
+                        newText = text.encode('utf-8')
                         if newText == lastLine:
                             continue
                         if count + newText.count(' ') <=500:
@@ -39,7 +39,7 @@ def cleanArticle(url, number):
                         else:
                             keepGoing = False
                 else:
-                    newText = line.string.encode('ascii', 'ignore')
+                    newText = line.string.encode('utf-8')
                     if newText == lastLine:
                         continue
                     elif count + newText.count(' ') <= 500:

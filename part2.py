@@ -40,7 +40,7 @@ def main():
     urls = ["https://www.voanews.com/author/4365.html",
             "https://www.voanews.com/author/25810.html",
             "https://www.voanews.com/author/4345.html",
-            "https://www.voanews.com/author/4511.html",
+            "https://www.voanews.com/author/19900.html",
             "https://www.voanews.com/author/24557.html",
             "https://www.voanews.com/author/4349.html",
             "https://www.voanews.com/author/23467.html",
