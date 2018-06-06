@@ -33,7 +33,7 @@ def cleanArticle(url, number):
                         newText = text.encode('ascii', 'ignore')
                         if newText == lastLine:
                             continue
-                        if count + newText.count(' ') <=340:
+                        if count + newText.count(' ') <=500:
                             count += stringToFile(newText, text_file)
                             lastLine = newText
                         else:
@@ -42,7 +42,7 @@ def cleanArticle(url, number):
                     newText = line.string.encode('ascii', 'ignore')
                     if newText == lastLine:
                         continue
-                    elif count + newText.count(' ') <= 340:
+                    elif count + newText.count(' ') <= 500:
                         count += stringToFile(newText, text_file)
                         lastLine = newText
                     else:
