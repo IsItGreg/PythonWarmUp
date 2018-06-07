@@ -13,12 +13,12 @@ def getArticle(author, soup, num, aArtCur):
     tIndexes = []
     newNum = num
     aFromP = 0
-    if aArtCur >= 25:
+    if aArtCur >= 35:
         print("Already found 25 articles for " + author)
         return tIndexes, tAuthors, tTitles, tLinks, aFromP
     for link in soup.find_all('a'):
         if link.get('href').startswith("/a/") and len(link.get('href')) > 16 and link.get('href') != tLastLink \
-                and aArtCur + aFromP < 25:
+                and aArtCur + aFromP < 35:
             tLinks += ["https://www.voanews.com/" + link.get('href')]
             tAuthors += [author]
             tLastLink = link.get('href')
@@ -67,7 +67,7 @@ def main():
         print(aArticles)
 
         for l in range(2, 10):
-            if aArticles >= 25:
+            if aArticles >= 35:
                 print("Skipping pages")
                 break
             pageArticles = 0
