@@ -1,6 +1,6 @@
 
 
-import urllib2
+from urllib.request import urlopen
 import pandas
 from bs4 import BeautifulSoup
 from warmup import cleanArticle
@@ -51,9 +51,9 @@ def main():
     authors = []
     titles = []
     indexes = []
-    for i in range(0, len(urls)):
+    for i in range(0, 1):#len(urls)):
         aArticles = 0
-        tempHtml = urllib2.urlopen(urls[i])
+        tempHtml = urlopen(urls[i])
         soup = BeautifulSoup(tempHtml, 'html.parser')
         author = soup.find('h1').string
         print(author)
@@ -73,7 +73,7 @@ def main():
             pageArticles = 0
             print("pag" + str(l))
             try:
-                tempHtml = urllib2.urlopen(str(urls[i]) + "?page=" + str(l))
+                tempHtml = urlopen(str(urls[i]) + "?page=" + str(l))
             except:
                 print("No page number " + str(l))
                 break
